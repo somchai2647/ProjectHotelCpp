@@ -6,3 +6,5 @@
 *.vsix
 
 *.exe
+
+*.dat
