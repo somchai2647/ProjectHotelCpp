@@ -230,7 +230,7 @@ void Hotel::modify(string r)
             cout << "****************\n";
             cout << "* Modify Form *\n";
             cout << "****************\n";
-            roomNo = r;
+            // roomNo = r;
             cout << "Enter Name: ";
             cin >> name;
             cout << "Enter Phone: ";
@@ -244,7 +244,7 @@ void Hotel::modify(string r)
         }
         else
         {
-            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << endl;
+            fileOut << r << " " << name << " " << phone << " " << nights << " " << fare << endl;
         }
     }
     fileInOut.close();
