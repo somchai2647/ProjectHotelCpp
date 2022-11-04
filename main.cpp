@@ -37,6 +37,7 @@ public:
     void display();
     int checkRoom(string r);
     void deleteRecord(string r);
+    int readCSV();
 };
 
 int main()
@@ -211,44 +212,44 @@ void Hotel::edit()
 void Hotel::modify(string r)
 {
     clear();
-    long pos, flag = 0;
-    string room, name, phone, nights, fare;
     fstream fileInOut(fileName.c_str(), ios::in | ios::out);
+    ofstream fileOut("temp.dat", ios::out);
     if (!fileInOut.is_open())
     {
         cout << "File could not opened. " << fileName.c_str() << endl;
         return;
     }
-    while (fileInOut >> room >> name >> phone >> nights >> fare)
+
+    int found = 0;
+
+    while (fileInOut >> roomNo >> name >> phone >> nights >> fare)
     {
-        pos = fileInOut.tellg();
-        if (room == r)
+        if (roomNo != r)
         {
+            found = 1;
+            cout << "****************\n";
+            cout << "* Modify Form *\n";
+            cout << "****************\n";
+            roomNo = r;
             cout << "Enter Name: ";
             cin >> name;
             cout << "Enter Phone: ";
             cin >> phone;
-            cout << "Enter Nights: ";
+            cout << "Enter nights: ";
             cin >> nights;
-            cout << "Enter Fare: ";
-            cin >> fare;
-            fileInOut.seekg(pos);
-            fileInOut << room << " " << name << " " << phone << " " << nights << " " << fare << endl;
-            cout << "Record is modified successfully" << endl;
-            cout << "Press any key to main menu...";
-            flag = 1;
-            getch();
-            mainMenu();
+            fare = nights * price;
+            fileInOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << endl;
+            cout << "💾 Record is modified successfully" << endl;
+            cout << "Press any key to continue...";
+        }
+        else
+        {
+            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << endl;
         }
     }
-    if (flag == 0)
-    {
-        cout << "Room No. not found" << endl;
-        cout << "Press any key to main menu...";
-        getch();
-        mainMenu();
-    }
     fileInOut.close();
+    getch();
+    mainMenu();
 }
 
 void Hotel::deleteRecord(string r)
@@ -296,8 +297,57 @@ int Hotel::checkRoom(string r)
     return flag;
 }
 
+int Hotel::readCSV()
+{
+    ifstream fileIn("testCSV.csv", ios::in);
+    if (!fileIn.is_open())
+    {
+        cout << "File could not opened. " << fileName.c_str() << endl;
+        return 0;
+    }
+    while (fileIn >> roomNo >> name >> phone >> nights >> fare)
+    {
+        cout << roomNo << "," << name << "," << phone << "," << nights << "," << fare << endl;
+    }
+    fileIn.close();
+    return 1;
+}
+
 void clear()
 {
     // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
     std::cout << "\x1B[2J\x1B[H";
+}
+
+// function Replace a line in text file
+void replaceLine(string fileName, string oldLine, string newLine)
+{
+    ifstream fileIn(fileName.c_str(), ios::in);
+    if (!fileIn.is_open())
+    {
+        cout << "File could not opened. " << fileName.c_str() << endl;
+        return;
+    }
+    ofstream fileOut("temp.dat", ios::out);
+    if (!fileOut.is_open())
+    {
+        cout << "File could not opened. " << fileName.c_str() << endl;
+        return;
+    }
+    string line;
+    while (getline(fileIn, line))
+    {
+        if (line != oldLine)
+        {
+            fileOut << line << endl;
+        }
+        else
+        {
+            fileOut << newLine << endl;
+        }
+    }
+    fileIn.close();
+    fileOut.close();
+    remove(fileName.c_str());
+    rename("temp.dat", fileName.c_str());
 }
