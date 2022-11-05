@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <fstream>
 #include <conio.h>
+#include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -49,7 +51,7 @@ int main()
     clear();
     Hotel hotel("myHotel", 700);
     intro();
-    adminLogin();
+    // adminLogin();
 
     hotel.mainMenu();
     return 0;
@@ -85,6 +87,12 @@ int adminLogin()
         clear();
         return main();
     }
+}
+
+void clear()
+{
+    // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
+    std::cout << "\x1B[2J\x1B[H";
 }
 
 void Hotel::mainMenu()
@@ -309,31 +317,37 @@ int Hotel::checkRoom(string targetRoom)
 
 int Hotel::readCSV()
 {
-    ifstream fileIn("hotelRoom.csv", ios::app);
+    vector<vector<string>> content;
+    vector<string> row;
+    string line, word;
+
+    fstream fileIn("hotelRoom.csv", ios::in);
     if (!fileIn.is_open())
     {
         cout << "File could not opened. " << fileName.c_str() << endl;
         return 0;
     }
-    int skip = 0;
-    while (fileIn >> roomNo >> price >> roomtype >> addon >> floor)
+
+    while (getline(fileIn, line))
     {
-        if (skip == 0)
+        row.clear();
+        stringstream s(line);
+        while (getline(s, word, ','))
         {
-            skip++;
-            continue;
+            row.push_back(word);
         }
-        cout << roomNo << "," << price << "," << roomtype << "," << addon << "," << floor << endl;
+        content.push_back(row);
+    }
+    fileIn.close();
+
+    for (int i = 0; i < content.size(); i++)
+    {
+        for (int j = 0; j < content[i].size(); j++)
+        {
+            cout << content[i][j] << " ";
+        }
+        cout << "\n";
     }
 
-    fileIn.close();
-    cout << "Press any key to main menu...";
-    getch();
-    return 0;
-}
-
-void clear()
-{
-    // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
-    std::cout << "\x1B[2J\x1B[H";
+    return 1;
 }
