@@ -1,35 +1,38 @@
-//https://java2blog.com/read-csv-file-in-cpp/
+// https://java2blog.com/read-csv-file-in-cpp/
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <string.h>
 #include <vector>
 #include <sstream>
 
-class CSVContoller
+using namespace std;
+
+class CSVController
 {
 private:
-    /* data */
     string fileName;
+    vector<string> row;
+    vector<vector<string>> content;
+    vector<string> split(string str, char delimiter);
+    string line, word;
+
 public:
-    CSVContoller(string fileName);
-    ~CSVContoller();
+    CSVController(string fileName)
+    {
+        this->fileName = fileName;
+    }
+
+public:
+    int readCSV();
 };
 
-CSVContoller::CSVContoller(string fileName)
-{
-}
-
-CSVContoller::~CSVContoller()
-{
-}
-
-CSVContoller::readCSV()
+int CSVController::readCSV()
 {
     vector<vector<string>> content;
     vector<string> row;
     string line, word;
 
-    fstream fileIn(fileName.c_str(), ios::in);
+    fstream fileIn("hotelRoom.csv", ios::in);
     if (!fileIn.is_open())
     {
         cout << "File could not opened. " << fileName.c_str() << endl;
