@@ -17,7 +17,7 @@ int main()
     // adminLogin();
 
     hotel.mainMenu();
-    cout << "CLIDW";
+
     return 0;
 }
 

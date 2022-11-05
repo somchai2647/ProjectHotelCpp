@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <fstream>
 #include <conio.h>
+#include "CSVContoller.h"
 
 using namespace std;
 
@@ -22,12 +23,10 @@ private:
     float addon = 0.00; //ราคาเพิ่มเติม
     int floor;          //ชั้น
 
+
 public:
-    Hotel(string hotelName, float price)
-    {
-        this->price = price; // Constructor with parameters
-        this->fileName = hotelName + ".dat";
-    }
+    Hotel(string hotelName, float price);
+   
 
 public:
     void mainMenu();
@@ -37,9 +36,20 @@ public:
     void display();
     int checkRoom(string r);
     void deleteRecord(string r);
-    // int readCSV();
+    int readCSV();
     void clear();
 };
+int Hotel::readCSV()
+{
+
+    return 0;
+}
+
+Hotel::Hotel(string hotelName, float price)
+{
+    this->hotelName = hotelName;
+    this->price = price;
+}
 
 void Hotel::mainMenu()
 {
