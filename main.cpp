@@ -22,6 +22,10 @@ private:
     float price = 0.00;            //ราคาต่อห้องต่อคืน
     string fileName = "hotel.dat"; //ชื่อไฟล์
 
+    string roomtype;    //ประเภทห้อง
+    float addon = 0.00; //ราคาเพิ่มเติม
+    int floor;          //ชั้น
+
 public:
     Hotel(string hotelName, float price)
     {
@@ -42,7 +46,7 @@ public:
 
 int main()
 {
-
+    remove("temp.dat");
     Hotel hotel("myHotel", 700);
     intro();
     adminLogin();
@@ -93,7 +97,8 @@ void Hotel::mainMenu()
     cout << "1. Add" << endl;
     cout << "2. Edit" << endl;
     cout << "3. Check" << endl;
-    cout << "4. Exit" << endl;
+    cout << "4. Read CSV TEST" << endl;
+    cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
     cin >> choice;
     switch (choice)
@@ -108,8 +113,10 @@ void Hotel::mainMenu()
         display();
         break;
     case 4:
-        exit(0);
+        readCSV();
         break;
+    case 0:
+        exit(0);
     default:
         cout << "Invalid Choice" << endl;
     }
@@ -224,7 +231,7 @@ void Hotel::modify(string r)
 
     while (fileInOut >> roomNo >> name >> phone >> nights >> fare)
     {
-        if (roomNo != r)
+        if (roomNo == r)
         {
             found = 1;
             cout << "****************\n";
@@ -238,16 +245,19 @@ void Hotel::modify(string r)
             cout << "Enter nights: ";
             cin >> nights;
             fare = nights * price;
-            fileInOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << endl;
+            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << endl;
             cout << "💾 Record is modified successfully" << endl;
             cout << "Press any key to continue...";
         }
         else
         {
-            fileOut << r << " " << name << " " << phone << " " << nights << " " << fare << endl;
+            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << endl;
         }
     }
     fileInOut.close();
+    fileOut.close();
+    remove(fileName.c_str());
+    rename("temp.dat", fileName.c_str());
     getch();
     mainMenu();
 }
@@ -299,55 +309,31 @@ int Hotel::checkRoom(string r)
 
 int Hotel::readCSV()
 {
-    ifstream fileIn("testCSV.csv", ios::in);
+    ifstream fileIn("hotelRoom.csv", ios::app);
     if (!fileIn.is_open())
     {
         cout << "File could not opened. " << fileName.c_str() << endl;
         return 0;
     }
-    while (fileIn >> roomNo >> name >> phone >> nights >> fare)
+    int skip = 0;
+    while (fileIn >> roomNo >> price >> roomtype >> addon >> floor)
     {
-        cout << roomNo << "," << name << "," << phone << "," << nights << "," << fare << endl;
+        if (skip == 0)
+        {
+            skip++;
+            continue;
+        }
+        cout << roomNo << "," << price << "," << roomtype << "," << addon << "," << floor << endl;
     }
+
     fileIn.close();
-    return 1;
+    cout << "Press any key to main menu...";
+    getch();
+    return 0;
 }
 
 void clear()
 {
     // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
     std::cout << "\x1B[2J\x1B[H";
-}
-
-// function Replace a line in text file
-void replaceLine(string fileName, string oldLine, string newLine)
-{
-    ifstream fileIn(fileName.c_str(), ios::in);
-    if (!fileIn.is_open())
-    {
-        cout << "File could not opened. " << fileName.c_str() << endl;
-        return;
-    }
-    ofstream fileOut("temp.dat", ios::out);
-    if (!fileOut.is_open())
-    {
-        cout << "File could not opened. " << fileName.c_str() << endl;
-        return;
-    }
-    string line;
-    while (getline(fileIn, line))
-    {
-        if (line != oldLine)
-        {
-            fileOut << line << endl;
-        }
-        else
-        {
-            fileOut << newLine << endl;
-        }
-    }
-    fileIn.close();
-    fileOut.close();
-    remove(fileName.c_str());
-    rename("temp.dat", fileName.c_str());
 }
