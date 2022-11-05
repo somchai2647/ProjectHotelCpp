@@ -46,7 +46,7 @@ public:
 
 int main()
 {
-    remove("temp.dat");
+    clear();
     Hotel hotel("myHotel", 700);
     intro();
     adminLogin();
@@ -216,7 +216,7 @@ void Hotel::edit()
     }
 }
 
-void Hotel::modify(string r)
+void Hotel::modify(string targetRoom)
 {
     clear();
     fstream fileInOut(fileName.c_str(), ios::in | ios::out);
@@ -231,7 +231,7 @@ void Hotel::modify(string r)
 
     while (fileInOut >> roomNo >> name >> phone >> nights >> fare)
     {
-        if (roomNo == r)
+        if (roomNo == targetRoom)
         {
             found = 1;
             cout << "****************\n";
@@ -262,7 +262,7 @@ void Hotel::modify(string r)
     mainMenu();
 }
 
-void Hotel::deleteRecord(string r)
+void Hotel::deleteRecord(string targetRoom)
 {
     clear();
     string room, name, phone, nights, fare;
@@ -275,7 +275,7 @@ void Hotel::deleteRecord(string r)
     }
     while (fileIn >> room >> name >> phone >> nights >> fare)
     {
-        if (room != r)
+        if (room != targetRoom)
         {
             fileOut << room << " " << name << " " << phone << " " << nights << " " << fare << endl;
         }
@@ -290,14 +290,14 @@ void Hotel::deleteRecord(string r)
     mainMenu();
 }
 
-int Hotel::checkRoom(string r)
+int Hotel::checkRoom(string targetRoom)
 {
     int flag = 0;
     string room, name, phone, nights, fare;
     ifstream fin(fileName.c_str(), ios::in);
     while (fin >> room >> name >> phone >> nights >> fare)
     {
-        if (room == r)
+        if (room == targetRoom)
         {
             flag = 1;
             break;
