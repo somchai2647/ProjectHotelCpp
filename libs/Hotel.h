@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <fstream>
 #include <conio.h>
-#include "CSVContoller.h"
+#include "CSVController.h"
 
 using namespace std;
 
@@ -23,6 +23,7 @@ private:
     float addon = 0.00; //ราคาเพิ่มเติม
     int floor;          //ชั้น
 
+    CSVController csv;
 
 public:
     Hotel(string hotelName, float price);
@@ -41,7 +42,7 @@ public:
 };
 int Hotel::readCSV()
 {
-
+    csv.readCSV();
     return 0;
 }
 

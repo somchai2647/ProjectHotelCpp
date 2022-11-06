@@ -17,9 +17,8 @@ private:
     string line, word;
 
 public:
-    CSVController(string fileName)
+    CSVController()
     {
-        this->fileName = fileName;
     }
 
 public:
