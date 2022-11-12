@@ -55,7 +55,7 @@ Hotel::Hotel(string hotelName, float price)
 void Hotel::mainMenu()
 {
     clear();
-    int choice;
+    char choice;
     cout << "*************\n";
     cout << "* MAIN MENU *\n";
     cout << "*************\n";
@@ -65,22 +65,22 @@ void Hotel::mainMenu()
     cout << "4. Read CSV TEST" << endl;
     cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
-    cin >> choice;
+    choice = getch();
     switch (choice)
     {
-    case 1:
+    case '1':
         add();
         break;
-    case 2:
+    case '2':
         edit();
         break;
-    case 3:
+    case '3':
         display();
         break;
-    case 4:
+    case '4':
         // readCSV();
         break;
-    case 0:
+    case '0':
         exit(0);
     default:
         cout << "Invalid Choice" << endl;
