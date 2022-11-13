@@ -39,8 +39,8 @@ public:
     void display();
     void mainMenu();
     void modify(string targetRoom);
-    int checkRoom(string targetRoom);
     void deleteRecord(string targetRoom);
+    int checkRoom(string targetRoom, string targetPhone);
 };
 int Hotel::readCSV()
 {
@@ -107,7 +107,7 @@ void Hotel::add()
     cin >> nights;
     fare = nights * price;
 
-    if (checkRoom(roomNo) == 1)
+    if (checkRoom(roomNo, phone) == 1)
     {
         cout << "Room is already booked" << endl;
         getch();
@@ -258,13 +258,23 @@ void Hotel::deleteRecord(string targetRoom)
     mainMenu();
 }
 
-int Hotel::checkRoom(string targetRoom)
+int Hotel::checkRoom(string targetRoom, string targetPhone)
 {
     int flag = 0;
     string room, name, phone, nights, fare;
     ifstream fin(fileName.c_str(), ios::in);
+    int userCouter = 0;
     while (fin >> room >> name >> phone >> nights >> fare)
     {
+        if (phone == targetPhone)
+        {
+            userCouter++;
+            if (userCouter > 2)
+            {
+                flag = 1;
+                break;
+            }
+        }
         if (room == targetRoom)
         {
             flag = 1;
