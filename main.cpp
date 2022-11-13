@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 #include "libs/Hotel.h"
 
 using namespace std;
@@ -9,12 +10,12 @@ void intro();
 int adminLogin();
 int readCSV();
 
+Hotel hotel("myHotel", 700.00);
+
 int main()
 {
-    Hotel hotel("myHotel", 700);
     intro();
-    // adminLogin();
-
+    adminLogin();
     hotel.mainMenu();
 
     return 0;
@@ -38,18 +39,33 @@ int adminLogin()
     cin >> username;
     cout << "Enter Password: ";
     cin >> password;
-    if (username == "admin" && password == "admin")
+
+    ifstream fileIn("staffList.txt", ios::in);
+    if (!fileIn)
     {
-        cout << "Login Successful" << endl;
-        return 0;
+        cout << "Error opening file";
+        exit(1);
     }
-    else
+
+    string readUsername, readPassword;
+    bool foundUser = false;
+    while (fileIn >> readUsername >> readPassword)
+    {
+        if (username == readUsername && password == readPassword)
+        {
+            hotel.setStaffUsername(readUsername);
+            foundUser = true;
+            break;
+        }
+    }
+
+    if (!foundUser)
     {
         cout << "Login Failed";
         getch();
-        clear();
         return main();
     }
+    return 0;
 }
 
 void clear()
@@ -57,4 +73,3 @@ void clear()
     // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
     std::cout << "\x1B[2J\x1B[H";
 }
-
