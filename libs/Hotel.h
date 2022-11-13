@@ -213,13 +213,13 @@ void Hotel::modify(string targetRoom)
             cout << "Enter nights: ";
             cin >> nights;
             fare = nights * price;
-            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << staffUsername << endl;
+            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << " " << staffUsername << endl;
             cout << "💾 Record is modified successfully" << endl;
             cout << "Press any key to continue...";
         }
         else
         {
-            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << staffUsername << endl;
+            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << " " << staffUsername << endl;
         }
     }
     fileInOut.close();

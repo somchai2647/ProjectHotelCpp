@@ -14,7 +14,6 @@ Hotel hotel("myHotel", 700.00);
 
 int main()
 {
-    clear();
     intro();
     adminLogin();
     hotel.mainMenu();
