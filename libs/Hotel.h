@@ -23,22 +23,24 @@ private:
     float addon = 0.00; //ราคาเพิ่มเติม
     int floor;          //ชั้น
 
+    string staffUsername; //ชื่อผู้ใช้งานพนักงาน ได้จากการ Login
+
     CSVController csv;
 
 public:
     Hotel(string hotelName, float price);
-   
+    void setStaffUsername(string staffUsername);
 
 public:
-    void mainMenu();
     void add();
     void edit();
-    void modify(string r);
-    void display();
-    int checkRoom(string r);
-    void deleteRecord(string r);
-    int readCSV();
     void clear();
+    int readCSV();
+    void display();
+    void mainMenu();
+    void modify(string targetRoom);
+    int checkRoom(string targetRoom);
+    void deleteRecord(string targetRoom);
 };
 int Hotel::readCSV()
 {
@@ -113,7 +115,7 @@ void Hotel::add()
     }
     else
     {
-        fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << endl;
+        fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << " " << staffUsername << endl;
         cout << "💾 Room is booked successfully" << endl;
         cout << "Press any key to continue...";
         getch();
@@ -132,7 +134,7 @@ void Hotel::display()
         return;
     }
     cout << setfill('*') << setw(55) << "*" << endl;
-    while (fileIn >> roomNo >> name >> phone >> nights >> fare)
+    while (fileIn >> roomNo >> name >> phone >> nights >> fare >> staffUsername)
     {
 
         cout << "Room No: " << roomNo << endl;
@@ -141,6 +143,7 @@ void Hotel::display()
         cout << "Price/day: " << price << endl;
         cout << "nights: " << nights << endl;
         cout << "Fare: " << fare << endl;
+        cout << "Staff: " << staffUsername << endl;
         cout << endl;
         cout << setfill('*') << setw(55) << "*" << endl;
     }
@@ -194,7 +197,7 @@ void Hotel::modify(string targetRoom)
 
     int found = 0;
 
-    while (fileInOut >> roomNo >> name >> phone >> nights >> fare)
+    while (fileInOut >> roomNo >> name >> phone >> nights >> fare >> staffUsername)
     {
         if (roomNo == targetRoom)
         {
@@ -210,13 +213,13 @@ void Hotel::modify(string targetRoom)
             cout << "Enter nights: ";
             cin >> nights;
             fare = nights * price;
-            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << endl;
+            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << staffUsername << endl;
             cout << "💾 Record is modified successfully" << endl;
             cout << "Press any key to continue...";
         }
         else
         {
-            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << endl;
+            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << staffUsername << endl;
         }
     }
     fileInOut.close();
@@ -270,6 +273,11 @@ int Hotel::checkRoom(string targetRoom)
     }
     fin.close();
     return flag;
+}
+
+void Hotel::setStaffUsername(string staffUsername)
+{
+    this->staffUsername = staffUsername;
 }
 
 void Hotel::clear()
