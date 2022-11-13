@@ -11,7 +11,6 @@ int readCSV();
 
 int main()
 {
-    clear();
     Hotel hotel("myHotel", 700);
     intro();
     // adminLogin();
