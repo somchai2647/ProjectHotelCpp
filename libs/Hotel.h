@@ -61,9 +61,9 @@ void Hotel::mainMenu()
     cout << "*************\n";
     cout << "* MAIN MENU *\n";
     cout << "*************\n";
-    cout << "1. Add" << endl;
-    cout << "2. Edit" << endl;
-    cout << "3. Check" << endl;
+    cout << "1. Add a booking" << endl;
+    cout << "2. Edit booking list" << endl;
+    cout << "3. Check booking list" << endl;
     cout << "4. Read CSV TEST" << endl;
     cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
@@ -161,8 +161,8 @@ void Hotel::edit()
     cout << "*************\n";
     cout << "* EDIT MENU *\n";
     cout << "*************\n";
-    cout << "1. Modify Customer Record" << endl;
-    cout << "2. Delete Customer Record" << endl;
+    cout << "1. Modify Booking Record" << endl;
+    cout << "2. Delete Booking Record" << endl;
     cout << "3. Exit" << endl;
     cout << "Enter your choice: ";
     cin >> choice;
