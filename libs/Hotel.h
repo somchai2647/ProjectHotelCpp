@@ -43,6 +43,7 @@ public:
     void mainMenu();
     void modify(string targetRoom);
     void deleteRecord(string targetRoom);
+    void checkInOut(string targetRoom, string status);
     int checkRoom(string targetRoom, string targetPhone);
     string getDateTime();
 };
@@ -117,7 +118,6 @@ void Hotel::add()
 
     string roomFound = "";
     bool found = false;
-
     while (fileIn >> roomFound >> price >> roomType >> maxCustomer >> addon >> floor)
     {
         if (roomNo == roomFound)
@@ -125,6 +125,7 @@ void Hotel::add()
             found = true;
             fare = nights * price;
             addon = (customer > maxCustomer) ? ((addon * price) * (customer - maxCustomer)) * nights : 0.00;
+            cout << customer << "|" << maxCustomer << "|" << addon << "|" << nights << "|" << price << endl;
             cout << "===================" << endl;
             cout << "Room No: " << roomNo << endl;
             cout << "Room Type: " << roomType << endl;
@@ -139,7 +140,7 @@ void Hotel::add()
             key = getch();
             if (key == 'Y' || key == 'y')
             {
-                fileOut << roomNo << " " << price << name << " " << phone << " " << customer << " " << (fare + addon) << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
+                fileOut << roomNo << " " << price << " " << name << " " << phone << " " << customer << " " << (fare + addon) << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
                 cout << "Booking success!" << endl;
                 cout << "Press any key to continue...";
                 getch();
@@ -205,8 +206,10 @@ void Hotel::edit()
     cout << "* EDIT MENU *\n";
     cout << "*************\n";
     cout << "1. Modify Booking Record" << endl;
-    cout << "2. Delete Booking Record" << endl;
-    cout << "3. Exit" << endl;
+    cout << "2. Checkin Room" << endl;
+    cout << "3. Checkout Room" << endl;
+    cout << "4. Delete Booking Record" << endl;
+    cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
     choice = getch();
     clear();
@@ -221,10 +224,22 @@ void Hotel::edit()
     case '2':
         cout << "Enter Room No: ";
         cin >> roomNo;
-        deleteRecord(roomNo);
+        checkInOut(roomNo, "checkin");
         break;
 
     case '3':
+        cout << "Enter Room No: ";
+        cin >> roomNo;
+        checkInOut(roomNo, "checkout");
+        break;
+
+    case '4':
+        cout << "Enter Room No: ";
+        cin >> roomNo;
+        deleteRecord(roomNo);
+        break;
+
+    case '0':
         mainMenu();
         break;
 
@@ -245,13 +260,13 @@ void Hotel::modify(string targetRoom)
         return;
     }
 
-    int found = 0;
+    bool found = false;
 
     while (fileInOut >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
         if (roomNo == targetRoom)
         {
-            found = 1;
+            found = true;
             cout << "****************\n";
             cout << "* Modify Form *\n";
             cout << "****************\n";
@@ -276,6 +291,15 @@ void Hotel::modify(string targetRoom)
             fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << " " << staffUsername << " " << maxCustomer << endl;
         }
     }
+
+    if (!found)
+    {
+        cout << "Room not found!" << endl;
+        cout << "Press any key to continue...";
+        getch();
+        mainMenu();
+    }
+
     fileInOut.close();
     fileOut.close();
     remove(fileName.c_str());
@@ -307,6 +331,59 @@ void Hotel::deleteRecord(string targetRoom)
     rename("temp.dat", fileName.c_str());
     cout << "Record is deleted successfully" << endl;
     cout << "Press any key to main menu...";
+    getch();
+    mainMenu();
+}
+
+void Hotel::checkInOut(string targetRoom, string status)
+{
+    clear();
+    fstream fileInOut(fileName.c_str(), ios::in | ios::out);
+    ofstream fileOut("temp.dat", ios::out);
+    if (!fileInOut.is_open())
+    {
+        cout << "File could not opened. " << fileName.c_str() << endl;
+        return;
+    }
+
+    bool found = false;
+
+    while (fileInOut >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
+    {
+        if (roomNo == targetRoom)
+        {
+            found = true;
+            if (status == "checkin")
+            {
+                checkInDate = getDateTime();
+                fileOut << roomNo << " " << price << " " << name << " " << phone << " " << customer << " " << fare << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
+                cout << "💾 Record is modified successfully" << endl;
+                cout << "Press any key to continue...";
+            }
+            else
+            {
+                checkOutDate = getDateTime();
+                fileOut << roomNo << " " << price << " " << name << " " << phone << " " << customer << " " << fare << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
+                cout << "💾 Record is modified successfully" << endl;
+                cout << "Press any key to continue...";
+            }
+        }
+        else
+        {
+            fileOut << roomNo << " " << price << " " << name << " " << phone << " " << customer << " " << fare << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
+        }
+    }
+    if (!found)
+    {
+        cout << "Room not found!" << endl;
+        cout << "Press any key to continue...";
+        getch();
+        mainMenu();
+    }
+    fileInOut.close();
+    fileOut.close();
+    remove(fileName.c_str());
+    rename("temp.dat", fileName.c_str());
     getch();
     mainMenu();
 }
