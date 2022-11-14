@@ -10,21 +10,21 @@ using namespace std;
 class Hotel
 {
 private:
-    string phone;                  //เบอร์ติดต่อผู้จอง
-    string name;                   //ชื่อผู้จอง
-    string roomNo;                 //เลขห้อง
-    string fileName;               //ชื่อไฟล์เก็บรายการจองห้องพัก
-    string roomType;               //ประเภทห้อง
-    string hotelName;              //ชื่อโรงแรม
-    string checkInDate;            //วันที่เข้าพัก
-    string checkOutDate;           //วันที่ออกจากโรงแรม
-    int floor;                     //ชั้น
-    int nights;                    //จำนวนวันที่ต้องการจอง
-    int customer;                  //จำนวนผู้เข้าพัก
-    int maxCustomer;               //จำนวนผู้เข้าพักสูงสุดต่อห้อง
-    float fare = 0.00;             //ราคาจ่ายจริง
-    float price = 0.00;            //ราคาต่อห้องต่อคืน
-    float addon = 0.00;            //ราคาเพิ่มเติม
+    string phone;        //เบอร์ติดต่อผู้จอง
+    string name;         //ชื่อผู้จอง
+    string roomNo;       //เลขห้อง
+    string fileName;     //ชื่อไฟล์เก็บรายการจองห้องพัก
+    string roomType;     //ประเภทห้อง
+    string hotelName;    //ชื่อโรงแรม
+    string checkInDate;  //วันที่เข้าพัก
+    string checkOutDate; //วันที่ออกจากโรงแรม
+    int floor;           //ชั้น
+    int nights;          //จำนวนวันที่ต้องการจอง
+    int customer;        //จำนวนผู้เข้าพัก
+    int maxCustomer;     //จำนวนผู้เข้าพักสูงสุดต่อห้อง
+    float fare = 0.00;   //ราคาจ่ายจริง
+    float price = 0.00;  //ราคาต่อห้องต่อคืน
+    float addon = 0.00;  //ราคาเพิ่มเติม
 
     string staffUsername; //ชื่อผู้ใช้งานพนักงาน ได้จากการ Login
 
@@ -139,7 +139,7 @@ void Hotel::add()
             key = getch();
             if (key == 'Y' || key == 'y')
             {
-                fileOut << roomNo << " " << price << name << " " << phone << " " << customer << " " << (fare + addon) << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << endl;
+                fileOut << roomNo << " " << price << name << " " << phone << " " << customer << " " << (fare + addon) << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
                 cout << "Booking success!" << endl;
                 cout << "Press any key to continue...";
                 getch();
@@ -173,14 +173,15 @@ void Hotel::display()
         return;
     }
     cout << setfill('*') << setw(55) << "*" << endl;
-    while (fileIn >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername)
+    while (fileIn >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
 
         cout << "Room No: " << roomNo << endl;
         cout << "Name: " << name << endl;
         cout << "Phone: " << phone << endl;
         cout << "Price/night: " << price << endl;
-        cout << "nights: " << nights << endl;
+        cout << "Nights: " << nights << endl;
+        cout << "Recommended Customer: " << maxCustomer << endl;
         cout << "Customers: " << customer << endl;
         cout << "Fare: " << fare << endl;
         cout << "Check-in Date: " << checkInDate << endl;
@@ -246,7 +247,7 @@ void Hotel::modify(string targetRoom)
 
     int found = 0;
 
-    while (fileInOut >> roomNo >> name >> phone >> nights >> fare >> staffUsername)
+    while (fileInOut >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
         if (roomNo == targetRoom)
         {
@@ -259,16 +260,20 @@ void Hotel::modify(string targetRoom)
             cin >> name;
             cout << "Enter Phone: ";
             cin >> phone;
+            cout << "Enter number of customer: ";
+            cin >> customer;
             cout << "Enter nights: ";
             cin >> nights;
             fare = nights * price;
-            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << " " << staffUsername << endl;
+            addon = (customer > maxCustomer) ? ((addon * price) * (customer - maxCustomer)) * nights : 0.00;
+            fare = fare + addon;
+            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << " " << staffUsername << " " << maxCustomer << endl;
             cout << "💾 Record is modified successfully" << endl;
             cout << "Press any key to continue...";
         }
         else
         {
-            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << " " << staffUsername << endl;
+            fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << " " << staffUsername << " " << maxCustomer << endl;
         }
     }
     fileInOut.close();
@@ -289,11 +294,11 @@ void Hotel::deleteRecord(string targetRoom)
         cout << "File could not opened. " << fileName.c_str() << endl;
         return;
     }
-    while (fileIn >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername)
+    while (fileIn >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
         if (roomNo != targetRoom)
         {
-              fileOut << roomNo << " " << price << name << " " << phone << " " << customer << " " << fare << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << endl;
+            fileOut << roomNo << " " << price << name << " " << phone << " " << customer << " " << fare << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
         }
     }
     fileIn.close();
