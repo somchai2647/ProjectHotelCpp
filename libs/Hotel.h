@@ -13,18 +13,18 @@ private:
     string phone;                  //เบอร์ติดต่อผู้จอง
     string name;                   //ชื่อผู้จอง
     string roomNo;                 //เลขห้อง
-    string fileName = "hotel.dat"; //ชื่อไฟล์
+    string fileName;               //ชื่อไฟล์เก็บรายการจองห้องพัก
     string roomType;               //ประเภทห้อง
     string hotelName;              //ชื่อโรงแรม
     string checkInDate;            //วันที่เข้าพัก
     string checkOutDate;           //วันที่ออกจากโรงแรม
+    int floor;                     //ชั้น
     int nights;                    //จำนวนวันที่ต้องการจอง
     int customer;                  //จำนวนผู้เข้าพัก
     int maxCustomer;               //จำนวนผู้เข้าพักสูงสุดต่อห้อง
     float fare = 0.00;             //ราคาจ่ายจริง
     float price = 0.00;            //ราคาต่อห้องต่อคืน
     float addon = 0.00;            //ราคาเพิ่มเติม
-    int floor;                     //ชั้น
 
     string staffUsername; //ชื่อผู้ใช้งานพนักงาน ได้จากการ Login
 
@@ -56,6 +56,7 @@ int Hotel::readCSV()
 Hotel::Hotel(string hotelName, float price)
 {
     this->hotelName = hotelName;
+    this->fileName = "booking.dat";
     // this->price = price;
 }
 
@@ -198,7 +199,7 @@ void Hotel::display()
 void Hotel::edit()
 {
     clear();
-    int choice;
+    char choice;
     cout << "*************\n";
     cout << "* EDIT MENU *\n";
     cout << "*************\n";
@@ -206,21 +207,28 @@ void Hotel::edit()
     cout << "2. Delete Booking Record" << endl;
     cout << "3. Exit" << endl;
     cout << "Enter your choice: ";
-    cin >> choice;
+    choice = getch();
     clear();
-    cout << "Enter Room No: ";
-    cin >> roomNo;
     switch (choice)
     {
-    case 1:
+    case '1':
+        cout << "Enter Room No: ";
+        cin >> roomNo;
         modify(roomNo);
         break;
 
-    case 2:
+    case '2':
+        cout << "Enter Room No: ";
+        cin >> roomNo;
         deleteRecord(roomNo);
         break;
 
+    case '3':
+        mainMenu();
+        break;
+
     default:
+        edit();
         break;
     }
 }
@@ -274,7 +282,6 @@ void Hotel::modify(string targetRoom)
 void Hotel::deleteRecord(string targetRoom)
 {
     clear();
-    string room, name, phone, nights, fare;
     ifstream fileIn(fileName.c_str(), ios::in);
     ofstream fileOut("temp.dat", ios::out);
     if (!fileIn.is_open())
@@ -282,11 +289,11 @@ void Hotel::deleteRecord(string targetRoom)
         cout << "File could not opened. " << fileName.c_str() << endl;
         return;
     }
-    while (fileIn >> room >> name >> phone >> nights >> fare)
+    while (fileIn >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername)
     {
-        if (room != targetRoom)
+        if (roomNo != targetRoom)
         {
-            fileOut << room << " " << name << " " << phone << " " << nights << " " << fare << endl;
+              fileOut << roomNo << " " << price << name << " " << phone << " " << customer << " " << fare << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << endl;
         }
     }
     fileIn.close();
