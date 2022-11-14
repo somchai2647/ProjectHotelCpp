@@ -10,18 +10,21 @@ using namespace std;
 class Hotel
 {
 private:
-    string hotelName;              //ชื่อโรงแรม
-    string roomNo;                 //เลขห้อง
-    string name;                   //ชื่อผู้จอง
     string phone;                  //เบอร์ติดต่อผู้จอง
+    string name;                   //ชื่อผู้จอง
+    string roomNo;                 //เลขห้อง
+    string fileName = "hotel.dat"; //ชื่อไฟล์
+    string roomType;               //ประเภทห้อง
+    string hotelName;              //ชื่อโรงแรม
+    string checkInDate;            //วันที่เข้าพัก
+    string checkOutDate;           //วันที่ออกจากโรงแรม
     int nights;                    //จำนวนวันที่ต้องการจอง
+    int customer;                  //จำนวนผู้เข้าพัก
+    int maxCustomer;               //จำนวนผู้เข้าพักสูงสุดต่อห้อง
     float fare = 0.00;             //ราคาจ่ายจริง
     float price = 0.00;            //ราคาต่อห้องต่อคืน
-    string fileName = "hotel.dat"; //ชื่อไฟล์
-
-    string roomtype;    //ประเภทห้อง
-    float addon = 0.00; //ราคาเพิ่มเติม
-    int floor;          //ชั้น
+    float addon = 0.00;            //ราคาเพิ่มเติม
+    int floor;                     //ชั้น
 
     string staffUsername; //ชื่อผู้ใช้งานพนักงาน ได้จากการ Login
 
@@ -41,7 +44,9 @@ public:
     void modify(string targetRoom);
     void deleteRecord(string targetRoom);
     int checkRoom(string targetRoom, string targetPhone);
+    string getDateTime();
 };
+
 int Hotel::readCSV()
 {
     csv.readCSV();
@@ -51,7 +56,7 @@ int Hotel::readCSV()
 Hotel::Hotel(string hotelName, float price)
 {
     this->hotelName = hotelName;
-    this->price = price;
+    // this->price = price;
 }
 
 void Hotel::mainMenu()
@@ -93,6 +98,7 @@ void Hotel::add()
 {
     clear();
     ofstream fileOut(fileName.c_str(), ios_base::app);
+    ifstream fileIn("room.dat", ios::in);
     cout << "****************\n";
     cout << "* Booking Form *\n";
     cout << "****************\n";
@@ -103,23 +109,57 @@ void Hotel::add()
     cin >> name;
     cout << "Enter Phone: ";
     cin >> phone;
+    cout << "Enter number of customer: ";
+    cin >> customer;
     cout << "Enter nights: ";
     cin >> nights;
-    fare = nights * price;
 
-    if (checkRoom(roomNo, phone) == 1)
+    string roomFound = "";
+    float addon = 0.00;
+    int floor = 1;
+    bool found = false;
+
+    while (fileIn >> roomFound >> price >> roomType >> maxCustomer >> addon >> floor)
     {
-        cout << "Room is already booked" << endl;
-        getch();
-        mainMenu();
+        if (roomNo == roomFound)
+        {
+            found = true;
+            fare = nights * price;
+            addon = (customer > maxCustomer) ? ((addon * price) * (customer - maxCustomer)) * nights : 0.00;
+            cout << "===================" << endl;
+            cout << "Room No: " << roomNo << endl;
+            cout << "Room Type: " << roomType << endl;
+            cout << "Price: " << price << endl;
+            cout << "Night: " << nights << endl;
+            cout << "Floor: " << floor << endl;
+            cout << "Add-on: " << addon << " " << (customer - maxCustomer) << " /customer/nights " << endl;
+            cout << "Total: " << fare + addon << endl;
+            checkInDate = "-";
+            checkOutDate = "-";
+            cout << "Confirm booking? (Y/N): ";
+            key = getch();
+            if (key == 'Y' || key == 'y')
+            {
+                fileOut << roomNo << " " << name << " " << phone << " " << customer << " " << (fare + addon) << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << endl;
+                cout << "Booking success!" << endl;
+                cout << "Press any key to continue...";
+                getch();
+                mainMenu();
+            }
+            else
+            {
+                cout << "Booking canceled!" << endl;
+                cout << "Press any key to continue...";
+                getch();
+                mainMenu();
+            }
+        }
     }
-    else
+    if (!found)
     {
-        fileOut << roomNo << " " << name << " " << phone << " " << nights << " " << fare << " " << staffUsername << endl;
-        cout << "💾 Room is booked successfully" << endl;
+        cout << "Room not found!" << endl;
         cout << "Press any key to continue...";
         getch();
-        fileOut.close();
         mainMenu();
     }
 }
@@ -134,15 +174,18 @@ void Hotel::display()
         return;
     }
     cout << setfill('*') << setw(55) << "*" << endl;
-    while (fileIn >> roomNo >> name >> phone >> nights >> fare >> staffUsername)
+    while (fileIn >> roomNo >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername)
     {
 
         cout << "Room No: " << roomNo << endl;
         cout << "Name: " << name << endl;
         cout << "Phone: " << phone << endl;
-        cout << "Price/day: " << price << endl;
+        cout << "Price/night: " << price << endl;
         cout << "nights: " << nights << endl;
+        cout << "Customers: " << customer << endl;
         cout << "Fare: " << fare << endl;
+        cout << "Check-in Date: " << checkInDate << endl;
+        cout << "Check-out Date: " << checkOutDate << endl;
         cout << "Staff: " << staffUsername << endl;
         cout << endl;
         cout << setfill('*') << setw(55) << "*" << endl;
@@ -294,4 +337,12 @@ void Hotel::clear()
 {
     // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
     std::cout << "\x1B[2J\x1B[H";
+}
+
+string Hotel::getDateTime()
+{
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    string datetime = to_string(1900 + ltm->tm_year) + "-" + to_string(1 + ltm->tm_mon) + "-" + to_string(ltm->tm_mday) + "|" + to_string(ltm->tm_hour) + ":" + to_string(ltm->tm_min) + ":" + to_string(ltm->tm_sec);
+    return datetime;
 }
