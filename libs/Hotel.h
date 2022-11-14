@@ -115,8 +115,6 @@ void Hotel::add()
     cin >> nights;
 
     string roomFound = "";
-    float addon = 0.00;
-    int floor = 1;
     bool found = false;
 
     while (fileIn >> roomFound >> price >> roomType >> maxCustomer >> addon >> floor)
@@ -132,7 +130,7 @@ void Hotel::add()
             cout << "Price: " << price << endl;
             cout << "Night: " << nights << endl;
             cout << "Floor: " << floor << endl;
-            cout << "Add-on: " << addon << " " << (customer - maxCustomer) << " /customer/nights " << endl;
+            cout << "Add-on: " << addon << " " << ((customer > maxCustomer) ? (customer - maxCustomer) : 0) << "/customer/nights " << endl;
             cout << "Total: " << fare + addon << endl;
             checkInDate = "-";
             checkOutDate = "-";
@@ -140,7 +138,7 @@ void Hotel::add()
             key = getch();
             if (key == 'Y' || key == 'y')
             {
-                fileOut << roomNo << " " << name << " " << phone << " " << customer << " " << (fare + addon) << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << endl;
+                fileOut << roomNo << " " << price << name << " " << phone << " " << customer << " " << (fare + addon) << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << endl;
                 cout << "Booking success!" << endl;
                 cout << "Press any key to continue...";
                 getch();
@@ -174,7 +172,7 @@ void Hotel::display()
         return;
     }
     cout << setfill('*') << setw(55) << "*" << endl;
-    while (fileIn >> roomNo >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername)
+    while (fileIn >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername)
     {
 
         cout << "Room No: " << roomNo << endl;
