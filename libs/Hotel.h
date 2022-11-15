@@ -71,7 +71,6 @@ void Hotel::mainMenu()
     cout << "1. Add a booking" << endl;
     cout << "2. Edit booking list" << endl;
     cout << "3. Check booking list" << endl;
-    cout << "4. Read CSV TEST" << endl;
     cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
     choice = getch();
@@ -85,9 +84,6 @@ void Hotel::mainMenu()
         break;
     case '3':
         display();
-        break;
-    case '4':
-        // readCSV();
         break;
     case '0':
         exit(0);
@@ -181,6 +177,10 @@ void Hotel::display()
     if (!fileIn.is_open())
     {
         cout << "File could not opened. " << fileName.c_str() << endl;
+        cout << "Booking a room first!" << endl;
+        cout << "Press any key to continue..." << endl;
+        getch();
+        mainMenu();
         return;
     }
     cout << setfill('*') << setw(55) << "*" << endl;
