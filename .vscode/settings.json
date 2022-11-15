@@ -10,5 +10,6 @@
         "system_error": "cpp",
         "xlocale": "cpp",
         "istream": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

@@ -408,7 +408,7 @@ int Hotel::checkRoom(string targetRoom, string targetPhone)
     while (fin >> roomRound >> price >> name >> foundPhone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
         cout << "Phone Check: " << foundPhone << " " << targetPhone << endl;
-        if (foundPhone == targetPhone)
+        if (foundPhone == targetPhone && checkOutDate == "-")
         {
             userCouter++;
             if (userCouter > 2)
@@ -417,7 +417,7 @@ int Hotel::checkRoom(string targetRoom, string targetPhone)
                 break;
             }
         }
-        if (roomRound == targetRoom)
+        if (roomRound == targetRoom && checkOutDate == "-")
         {
             flag = 1;
             break;
