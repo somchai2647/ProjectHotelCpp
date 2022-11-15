@@ -10,8 +10,8 @@ using namespace std;
 class Hotel
 {
 private:
-    string phone;        //เบอร์ติดต่อผู้จอง
     string name;         //ชื่อผู้จอง
+    string phone;        //เบอร์ติดต่อผู้จอง
     string roomNo;       //เลขห้อง
     string fileName;     //ชื่อไฟล์เก็บรายการจองห้องพัก
     string roomType;     //ประเภทห้อง
@@ -130,7 +130,6 @@ void Hotel::add()
             found = true;
             fare = nights * price;
             addon = (customer > maxCustomer) ? ((addon * price) * (customer - maxCustomer)) * nights : 0.00;
-            cout << roomNo << "|" << roomFound;
             cout << "===================" << endl;
             cout << "Room No: " << roomFound << endl;
             cout << "Room Type: " << roomType << endl;
@@ -147,17 +146,14 @@ void Hotel::add()
             {
                 fileOut << roomNo << " " << price << " " << name << " " << phone << " " << customer << " " << (fare + addon) << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
                 cout << "Booking success!" << endl;
-                cout << "Press any key to continue...";
-                getch();
-                mainMenu();
             }
             else
             {
                 cout << "Booking canceled!" << endl;
-                cout << "Press any key to continue...";
-                getch();
-                mainMenu();
             }
+            cout << "Press any key to continue...";
+            getch(); 
+            mainMenu(); 
         }
     }
     fileIn.close();
@@ -413,11 +409,10 @@ int Hotel::checkRoom(string targetRoom, string targetPhone)
     int flag = 0;
     ifstream fin(fileName.c_str(), ios::in);
     int userCouter = 0;
-    string roomRound = "";
+    string roomFound = "";
     string foundPhone = "";
-    while (fin >> roomRound >> price >> name >> foundPhone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
+    while (fin >> roomFound >> price >> name >> foundPhone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
-        cout << "Phone Check: " << foundPhone << " " << targetPhone << endl;
         if (foundPhone == targetPhone && checkOutDate == "-")
         {
             userCouter++;
@@ -427,7 +422,7 @@ int Hotel::checkRoom(string targetRoom, string targetPhone)
                 break;
             }
         }
-        if (roomRound == targetRoom && checkOutDate == "-")
+        if (roomFound == targetRoom && checkOutDate == "-")
         {
             flag = 1;
             break;
