@@ -360,7 +360,7 @@ void Hotel::checkInOut(string targetRoom, string status)
 
     while (fileInOut >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
-        if (roomNo == targetRoom)
+        if (roomNo == targetRoom && (checkInDate == "-" || checkOutDate == "-"))
         {
             found = true;
             if (status == "checkin")
@@ -372,10 +372,20 @@ void Hotel::checkInOut(string targetRoom, string status)
             }
             else
             {
-                checkOutDate = getDateTime();
-                fileOut << roomNo << " " << price << " " << name << " " << phone << " " << customer << " " << fare << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
-                cout << "💾 Record is modified successfully" << endl;
-                cout << "Press any key to continue...";
+                if (checkInDate != "-")
+                {
+                    checkOutDate = getDateTime();
+                    fileOut << roomNo << " " << price << " " << name << " " << phone << " " << customer << " " << fare << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
+                    cout << "💾 Record is modified successfully" << endl;
+                    cout << "Press any key to continue...";
+                }
+                else
+                {
+                    cout << "Room is not checked in yet!" << endl;
+                    cout << "Press any key to continue...";
+                    getch();
+                    mainMenu();
+                }
             }
         }
         else
