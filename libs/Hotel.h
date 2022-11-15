@@ -120,14 +120,23 @@ void Hotel::add()
     bool found = false;
     while (fileIn >> roomFound >> price >> roomType >> maxCustomer >> addon >> floor)
     {
+
+        if (checkRoom(roomNo, phone) == 1)
+        {
+            cout << "Room is already booked" << endl;
+            cout << "Press any key to continue...";
+            getch();
+            mainMenu();
+        }
+
         if (roomNo == roomFound)
         {
             found = true;
             fare = nights * price;
             addon = (customer > maxCustomer) ? ((addon * price) * (customer - maxCustomer)) * nights : 0.00;
-            cout << customer << "|" << maxCustomer << "|" << addon << "|" << nights << "|" << price << endl;
+            cout << roomNo << "|" << roomFound;
             cout << "===================" << endl;
-            cout << "Room No: " << roomNo << endl;
+            cout << "Room No: " << roomFound << endl;
             cout << "Room Type: " << roomType << endl;
             cout << "Price: " << price << endl;
             cout << "Night: " << nights << endl;
@@ -155,6 +164,7 @@ void Hotel::add()
             }
         }
     }
+    fileIn.close();
     if (!found)
     {
         cout << "Room not found!" << endl;
@@ -391,12 +401,14 @@ void Hotel::checkInOut(string targetRoom, string status)
 int Hotel::checkRoom(string targetRoom, string targetPhone)
 {
     int flag = 0;
-    string room, name, phone, nights, fare;
     ifstream fin(fileName.c_str(), ios::in);
     int userCouter = 0;
-    while (fin >> room >> name >> phone >> nights >> fare)
+    string roomRound = "";
+    string foundPhone = "";
+    while (fin >> roomRound >> price >> name >> foundPhone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
-        if (phone == targetPhone)
+        cout << "Phone Check: " << foundPhone << " " << targetPhone << endl;
+        if (foundPhone == targetPhone)
         {
             userCouter++;
             if (userCouter > 2)
@@ -405,7 +417,7 @@ int Hotel::checkRoom(string targetRoom, string targetPhone)
                 break;
             }
         }
-        if (room == targetRoom)
+        if (roomRound == targetRoom)
         {
             flag = 1;
             break;
