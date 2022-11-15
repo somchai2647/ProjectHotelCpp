@@ -32,4 +32,4 @@
 *.app
 
 *.dat
-.vscode
+/.vscode
