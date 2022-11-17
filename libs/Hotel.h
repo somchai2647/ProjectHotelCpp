@@ -82,6 +82,7 @@ void Hotel::mainMenu()
     cout << "1. Add a booking" << endl;
     cout << "2. Edit booking list" << endl;
     cout << "3. Check booking list" << endl;
+    cout << "4. Export booking list (CSV)" << endl;
     cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
     choice = getch();
@@ -95,6 +96,18 @@ void Hotel::mainMenu()
         break;
     case '3':
         display();
+        break;
+    case '4':
+        if (csv.exportCSV(fileName, hotelName + ".csv") == 1)
+        {
+            cout << "Exported successfully" << endl;
+        }
+        else
+        {
+            cout << "Export failed" << endl;
+        }
+        getch();
+        mainMenu();
         break;
     case '0':
         exit(0);
@@ -284,7 +297,7 @@ void Hotel::modify(string targetRoom)
 
     while (fileInOut >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
-        if (roomNo == targetRoom && checkOutDate == "-" )
+        if (roomNo == targetRoom && checkOutDate == "-")
         {
             found = true;
             cout << "****************\n";
