@@ -284,7 +284,7 @@ void Hotel::modify(string targetRoom)
 
     while (fileInOut >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
-        if (roomNo == targetRoom)
+        if (roomNo == targetRoom && checkOutDate != "-" )
         {
             found = true;
             cout << "****************\n";
@@ -394,8 +394,6 @@ void Hotel::checkInOut(string targetRoom, string status)
                 {
                     cout << "Room is not checked in yet!" << endl;
                     cout << "Press any key to continue...";
-                    getch();
-                    mainMenu();
                 }
             }
         }
@@ -406,15 +404,14 @@ void Hotel::checkInOut(string targetRoom, string status)
     }
     fileInOut.close();
     fileOut.close();
+    remove(fileName.c_str());
+    rename("temp.dat", fileName.c_str());
     if (!found)
     {
         cout << "Room not found!" << endl;
         cout << "Press any key to continue...";
         remove("temp.dat");
     }
-
-    remove(fileName.c_str());
-    rename("temp.dat", fileName.c_str());
 
     getch();
     mainMenu();
