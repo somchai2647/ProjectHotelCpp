@@ -31,17 +31,17 @@ private:
     CSVController csv;
 
 public:
-    Hotel(string hotelName, float price);
+    Hotel(string hotelName);
     void setStaffUsername(string staffUsername);
 
 public:
     void add();
     void edit();
     void clear();
-    int readCSV();
+    int readCSVRoom(string roomFileName);
     void display();
     void mainMenu();
-    void initFile();
+    void initFileRoom();
     void modify(string targetRoom);
     void deleteRecord(string targetRoom);
     void checkInOut(string targetRoom, string status);
@@ -49,17 +49,27 @@ public:
     string getDateTime();
 };
 
-int Hotel::readCSV()
+Hotel::Hotel(string hotelName)
+{
+    this->hotelName = hotelName;
+    this->fileName = hotelName + "booking.dat";
+}
+
+void Hotel::initFileRoom()
+{
+    fstream fileStream;
+    fileStream.open(fileName.c_str(), ios::in);
+    if (fileStream.fail())
+    {
+        fileStream.open(fileName.c_str(), ios::out);
+        fileStream.close();
+    }
+}
+
+int Hotel::readCSVRoom(string roomFileName)
 {
     csv.readCSV();
     return 0;
-}
-
-Hotel::Hotel(string hotelName, float price)
-{
-    this->hotelName = hotelName;
-    this->fileName = "booking.dat";
-    initFile();
 }
 
 void Hotel::mainMenu()
@@ -97,7 +107,7 @@ void Hotel::add()
 {
     clear();
     ofstream fileOut(fileName.c_str(), ios_base::app);
-    ifstream fileIn("room.dat", ios::in);
+    ifstream fileIn("room.txt", ios::in);
     cout << "****************\n";
     cout << "* Booking Form *\n";
     cout << "****************\n";
@@ -152,12 +162,15 @@ void Hotel::add()
             {
                 cout << "Booking canceled!" << endl;
             }
+            fileIn.close();
+            fileOut.close();
             cout << "Press any key to continue...";
             getch();
             mainMenu();
         }
     }
     fileIn.close();
+    fileOut.close();
     if (!found)
     {
         cout << "Room not found!" << endl;
@@ -299,19 +312,19 @@ void Hotel::modify(string targetRoom)
         }
     }
 
-    if (!found)
-    {
-        remove("temp.dat");
-        cout << "Room not found!" << endl;
-        cout << "Press any key to continue...";
-        getch();
-        mainMenu();
-    }
-
     fileInOut.close();
     fileOut.close();
-    remove(fileName.c_str());
-    rename("temp.dat", fileName.c_str());
+    if (!found)
+    {
+        cout << "Room not found!" << endl;
+        cout << "Press any key to continue...";
+        remove("temp.dat");
+    }
+    else
+    {
+        remove(fileName.c_str());
+        rename("temp.dat", fileName.c_str());
+    }
     getch();
     mainMenu();
 }
@@ -391,17 +404,18 @@ void Hotel::checkInOut(string targetRoom, string status)
             fileOut << roomNo << " " << price << " " << name << " " << phone << " " << customer << " " << fare << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
         }
     }
+    fileInOut.close();
+    fileOut.close();
     if (!found)
     {
         cout << "Room not found!" << endl;
         cout << "Press any key to continue...";
-        getch();
-        mainMenu();
+        remove("temp.dat");
     }
-    fileInOut.close();
-    fileOut.close();
+
     remove(fileName.c_str());
     rename("temp.dat", fileName.c_str());
+
     getch();
     mainMenu();
 }
@@ -445,16 +459,6 @@ void Hotel::clear()
     std::cout << "\x1B[2J\x1B[H";
 }
 
-void Hotel::initFile()
-{
-    fstream fileStream;
-    fileStream.open("booking.dat", ios::in);
-    if (fileStream.fail())
-    {
-        fileStream.open("booking.dat", ios::out);
-        fileStream.close();
-    }
-}
 string Hotel::getDateTime()
 {
     time_t now = time(0);

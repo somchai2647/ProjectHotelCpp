@@ -8,14 +8,14 @@ using namespace std;
 void clear();
 void intro();
 int adminLogin();
-int readCSV();
 
-Hotel hotel("myHotel", 700.00);
+Hotel hotel("myHotel");
 
 int main()
 {
     intro();
     adminLogin();
+    hotel.initFileRoom();
     hotel.mainMenu();
 
     return 0;

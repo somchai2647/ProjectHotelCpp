@@ -31,7 +31,7 @@ int CSVController::readCSV()
     vector<string> row;
     string line, word;
 
-    fstream fileIn("hotelRoom.csv", ios::in);
+    fstream fileIn("room.csv", ios::in);
     if (!fileIn.is_open())
     {
         cout << "File could not opened. " << fileName.c_str() << endl;
