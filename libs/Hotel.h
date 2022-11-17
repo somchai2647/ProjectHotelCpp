@@ -41,6 +41,7 @@ public:
     int readCSV();
     void display();
     void mainMenu();
+    void initFile();
     void modify(string targetRoom);
     void deleteRecord(string targetRoom);
     void checkInOut(string targetRoom, string status);
@@ -58,6 +59,7 @@ Hotel::Hotel(string hotelName, float price)
 {
     this->hotelName = hotelName;
     this->fileName = "booking.dat";
+    ofstream fileOut(fileName.c_str(), ios::out);
     // this->price = price;
 }
 
@@ -152,8 +154,8 @@ void Hotel::add()
                 cout << "Booking canceled!" << endl;
             }
             cout << "Press any key to continue...";
-            getch(); 
-            mainMenu(); 
+            getch();
+            mainMenu();
         }
     }
     fileIn.close();
@@ -443,6 +445,15 @@ void Hotel::clear()
     std::cout << "\x1B[2J\x1B[H";
 }
 
+void Hotel::initFile()
+{
+    ofstream fileOut(fileName.c_str(), ios::out);
+    // fstream fileInOut(fileName.c_str(), ios::in | ios::out);
+    // if (!fileInOut.is_open())
+    // {
+    //     fileOut.close();
+    // }
+}
 string Hotel::getDateTime()
 {
     time_t now = time(0);
