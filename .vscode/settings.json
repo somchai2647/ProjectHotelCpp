@@ -1,15 +1,10 @@
 {
     "files.associations": {
         "*.js": "javascriptreact",
-        "sstream": "cpp",
-        "xstring": "cpp",
-        "ostream": "cpp",
-        "iostream": "cpp",
         "iosfwd": "cpp",
         "fstream": "cpp",
-        "system_error": "cpp",
-        "xlocale": "cpp",
-        "istream": "cpp"
+        "iostream": "cpp",
+        "vector": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

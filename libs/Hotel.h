@@ -31,16 +31,17 @@ private:
     CSVController csv;
 
 public:
-    Hotel(string hotelName, float price);
+    Hotel(string hotelName);
     void setStaffUsername(string staffUsername);
 
 public:
     void add();
     void edit();
     void clear();
-    int readCSV();
+    int readCSVRoom(string roomFileName);
     void display();
     void mainMenu();
+    void initFileRoom();
     void modify(string targetRoom);
     void deleteRecord(string targetRoom);
     void checkInOut(string targetRoom, string status);
@@ -48,17 +49,27 @@ public:
     string getDateTime();
 };
 
-int Hotel::readCSV()
+Hotel::Hotel(string hotelName)
+{
+    this->hotelName = hotelName;
+    this->fileName = hotelName + "booking.dat";
+}
+
+void Hotel::initFileRoom()
+{
+    fstream fileStream;
+    fileStream.open(fileName.c_str(), ios::in);
+    if (fileStream.fail())
+    {
+        fileStream.open(fileName.c_str(), ios::out);
+        fileStream.close();
+    }
+}
+
+int Hotel::readCSVRoom(string roomFileName)
 {
     csv.readCSV();
     return 0;
-}
-
-Hotel::Hotel(string hotelName, float price)
-{
-    this->hotelName = hotelName;
-    this->fileName = "booking.dat";
-    // this->price = price;
 }
 
 void Hotel::mainMenu()
@@ -71,6 +82,7 @@ void Hotel::mainMenu()
     cout << "1. Add a booking" << endl;
     cout << "2. Edit booking list" << endl;
     cout << "3. Check booking list" << endl;
+    cout << "4. Export booking list (CSV)" << endl;
     cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
     choice = getch();
@@ -85,6 +97,18 @@ void Hotel::mainMenu()
     case '3':
         display();
         break;
+    case '4':
+        if (csv.exportCSV(fileName, hotelName + ".csv") == 1)
+        {
+            cout << "Exported successfully" << endl;
+        }
+        else
+        {
+            cout << "Export failed" << endl;
+        }
+        getch();
+        mainMenu();
+        break;
     case '0':
         exit(0);
     default:
@@ -96,7 +120,7 @@ void Hotel::add()
 {
     clear();
     ofstream fileOut(fileName.c_str(), ios_base::app);
-    ifstream fileIn("room.dat", ios::in);
+    ifstream fileIn("room.txt", ios::in);
     cout << "****************\n";
     cout << "* Booking Form *\n";
     cout << "****************\n";
@@ -151,12 +175,15 @@ void Hotel::add()
             {
                 cout << "Booking canceled!" << endl;
             }
+            fileIn.close();
+            fileOut.close();
             cout << "Press any key to continue...";
-            getch(); 
-            mainMenu(); 
+            getch();
+            mainMenu();
         }
     }
     fileIn.close();
+    fileOut.close();
     if (!found)
     {
         cout << "Room not found!" << endl;
@@ -259,7 +286,7 @@ void Hotel::modify(string targetRoom)
 {
     clear();
     fstream fileInOut(fileName.c_str(), ios::in | ios::out);
-    ofstream fileOut("temp.dat", ios::out);
+    ofstream fileOut("temp.dat", ios::in | ios::out);
     if (!fileInOut.is_open())
     {
         cout << "File could not opened. " << fileName.c_str() << endl;
@@ -270,7 +297,7 @@ void Hotel::modify(string targetRoom)
 
     while (fileInOut >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
-        if (roomNo == targetRoom)
+        if (roomNo == targetRoom && checkOutDate == "-")
         {
             found = true;
             cout << "****************\n";
@@ -298,18 +325,19 @@ void Hotel::modify(string targetRoom)
         }
     }
 
+    fileInOut.close();
+    fileOut.close();
     if (!found)
     {
         cout << "Room not found!" << endl;
         cout << "Press any key to continue...";
-        getch();
-        mainMenu();
+        remove("temp.dat");
     }
-
-    fileInOut.close();
-    fileOut.close();
-    remove(fileName.c_str());
-    rename("temp.dat", fileName.c_str());
+    else
+    {
+        remove(fileName.c_str());
+        rename("temp.dat", fileName.c_str());
+    }
     getch();
     mainMenu();
 }
@@ -379,8 +407,6 @@ void Hotel::checkInOut(string targetRoom, string status)
                 {
                     cout << "Room is not checked in yet!" << endl;
                     cout << "Press any key to continue...";
-                    getch();
-                    mainMenu();
                 }
             }
         }
@@ -389,17 +415,17 @@ void Hotel::checkInOut(string targetRoom, string status)
             fileOut << roomNo << " " << price << " " << name << " " << phone << " " << customer << " " << fare << " " << nights << " " << checkInDate << " " << checkOutDate << " " << staffUsername << " " << maxCustomer << endl;
         }
     }
-    if (!found)
-    {
-        cout << "Room not found!" << endl;
-        cout << "Press any key to continue...";
-        getch();
-        mainMenu();
-    }
     fileInOut.close();
     fileOut.close();
     remove(fileName.c_str());
     rename("temp.dat", fileName.c_str());
+    if (!found)
+    {
+        cout << "Room not found!" << endl;
+        cout << "Press any key to continue...";
+        remove("temp.dat");
+    }
+
     getch();
     mainMenu();
 }
