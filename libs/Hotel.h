@@ -59,8 +59,7 @@ Hotel::Hotel(string hotelName, float price)
 {
     this->hotelName = hotelName;
     this->fileName = "booking.dat";
-    ofstream fileOut(fileName.c_str(), ios::out);
-    // this->price = price;
+    initFile();
 }
 
 void Hotel::mainMenu()
@@ -261,7 +260,7 @@ void Hotel::modify(string targetRoom)
 {
     clear();
     fstream fileInOut(fileName.c_str(), ios::in | ios::out);
-    ofstream fileOut("temp.dat", ios::out);
+    ofstream fileOut("temp.dat", ios::in | ios::out);
     if (!fileInOut.is_open())
     {
         cout << "File could not opened. " << fileName.c_str() << endl;
@@ -302,6 +301,7 @@ void Hotel::modify(string targetRoom)
 
     if (!found)
     {
+        remove("temp.dat");
         cout << "Room not found!" << endl;
         cout << "Press any key to continue...";
         getch();
@@ -447,12 +447,13 @@ void Hotel::clear()
 
 void Hotel::initFile()
 {
-    ofstream fileOut(fileName.c_str(), ios::out);
-    // fstream fileInOut(fileName.c_str(), ios::in | ios::out);
-    // if (!fileInOut.is_open())
-    // {
-    //     fileOut.close();
-    // }
+    fstream fileStream;
+    fileStream.open("booking.dat", ios::in);
+    if (fileStream.fail())
+    {
+        fileStream.open("booking.dat", ios::out);
+        fileStream.close();
+    }
 }
 string Hotel::getDateTime()
 {
