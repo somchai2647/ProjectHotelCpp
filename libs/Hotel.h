@@ -284,7 +284,7 @@ void Hotel::modify(string targetRoom)
 
     while (fileInOut >> roomNo >> price >> name >> phone >> customer >> fare >> nights >> checkInDate >> checkOutDate >> staffUsername >> maxCustomer)
     {
-        if (roomNo == targetRoom && checkOutDate != "-" )
+        if (roomNo == targetRoom && checkOutDate == "-" )
         {
             found = true;
             cout << "****************\n";
